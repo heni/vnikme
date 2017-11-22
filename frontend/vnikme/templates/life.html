@@ -1,0 +1,130 @@
+{% load static %}
+
+    <div id="root"></div>
+    <script type="text/babel">
+
+        var Button = Reactstrap.Button;
+
+        const styles = {
+            empty: { width: "10pt", height: "10pt", border: "1pt solid grey", margin: "0", padding: "0", borderCollapse: "collapse" },
+            filled: { width: "10pt", height: "10pt", border: "1pt solid grey", margin: "0", padding: "0", borderCollapse: "collapse", backgroundColor: "blue" }
+        };
+ 
+        class Game extends React.Component {
+            constructor() {
+                super();
+                var n = 50;
+                var fields = this.buildCleanFields(n);
+                this.state = { N: n, Fields: fields, Updater: -1 };
+            }
+
+            buildCleanFields(n) {
+                var fields = [];
+                for (var i = 0; i < n; ++i) {
+                    var row = [];
+                    for (var j = 0; j < n; ++j) {
+                        row.push(0);
+                    }
+                    fields.push(row);
+                }
+                return fields;
+            }
+
+            countNeighbours(fields, x, y) {
+                var count = 0;
+                for (var i = -1; i <= 1; ++i) {
+                    for (var j = -1; j <= 1; ++j) {
+                        if (i == 0 && j == 0)
+                            continue;
+                        if (x + i < 0 || x + i >= this.state.N || y + j < 0 || y + j >= this.state.N)
+                            continue;
+                        count += fields[x + i][y + j];
+                    }
+                }
+                return count;
+            }
+
+            doIteration() {
+                var fields = [];
+                var n = this.state.N;
+                for (var i = 0; i < n; ++i) {
+                    var row = [];
+                    for (var j = 0; j < n; ++j) {
+                        var count = this.countNeighbours(this.state.Fields, i, j);
+                        if (count == 2)
+                            row.push(this.state.Fields[i][j]);
+                        else if (count == 3)
+                            row.push(1);
+                        else
+                            row.push(0);
+                    }
+                    fields.push(row);
+                }
+                this.setState({ N: n, Fields: fields, Updater: this.state.Updater });
+            }
+
+            makeOnClick(i, j) {
+                var self = this;
+                return () => {
+                    var fields = self.state.Fields;
+                    fields[i][j] = 1 - fields[i][j];
+                    self.setState({ N: self.state.N, Fields: fields, Updater: self.state.Updater });
+                };
+            }
+
+            startGame() {
+                if (this.state.Updater != -1)
+                    return;
+                var state = this.state;
+                var self = this;
+                state.Updater = setInterval(() => self.doIteration(), 100);
+                this.setState(state);
+            }
+
+            stopGame() {
+                if (this.state.Updater == -1)
+                    return;
+                clearInterval(this.state.Updater);
+                var state = this.state;
+                state.Updater = -1;
+                this.setState(state);
+            }
+
+            clearGame() {
+                if (this.state.Updater != -1)
+                    clearInterval(this.state.Updater);
+                var n = 50;
+                var fields = this.buildCleanFields(n);
+                this.setState({ N: n, Fields: fields, Updater: -1 });
+            }
+
+            render() {
+                var self = this;
+                var rows = this.state.Fields.map(function(row, i) {
+                    var cells = row.map(function(cell, j) {
+                        var style = (cell == 0 ? styles.empty : styles.filled);
+                        var clickHandler = self.makeOnClick(i, j);
+                        return ( <td style={style} onClick={clickHandler}></td> );
+                    });
+                    return ( <tr>{cells}</tr> );
+                });
+
+                return ( <div>
+                            <table>{rows}</table>
+                            <Button color="primary" onClick={() => self.startGame()}>Start</Button>
+                            &nbsp;
+                            <Button color="primary" onClick={() => self.stopGame()}>Stop</Button>
+                            &nbsp;
+                            <Button color="primary" onClick={() => self.clearGame()}>Clear</Button>
+                        </div>
+                    );
+            }
+        }
+
+
+        // ========================================
+
+        ReactDOM.render(<Game />, document.getElementById("root"));
+
+    </script>
+
