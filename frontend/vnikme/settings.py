@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [u'vnik.me', u'www.vnik.me']
 # Application definition
 
 INSTALLED_APPS = [
+    'life.apps.LifeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

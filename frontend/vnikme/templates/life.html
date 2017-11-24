@@ -11,11 +11,13 @@
         };
  
         class Game extends React.Component {
-            constructor() {
-                super();
+            constructor(props) {
+                super(props);
                 var n = 50;
                 var fields = this.buildCleanFields(n);
-                this.state = { N: n, Fields: fields, Updater: -1 };
+                this.state = { N: n, Fields: fields, InitialFields: fields, Epoch: 0, Updater: -1, SavedLink: "" };
+                if (props.link != "")
+                    this.loadGame(props.link);
             }
 
             buildCleanFields(n) {
@@ -60,7 +62,7 @@
                     }
                     fields.push(row);
                 }
-                this.setState({ N: n, Fields: fields, Updater: this.state.Updater });
+                this.setState({ N: n, Fields: fields, InitialFields: this.state.InitialFields, Epoch: this.state.Epoch + 1, Updater: this.state.Updater, SavedLink: this.state.SavedLink });
             }
 
             makeOnClick(i, j) {
@@ -68,7 +70,7 @@
                 return () => {
                     var fields = self.state.Fields;
                     fields[i][j] = 1 - fields[i][j];
-                    self.setState({ N: self.state.N, Fields: fields, Updater: self.state.Updater });
+                    self.setState({ N: self.state.N, Fields: fields, Updater: self.state.Updater, SavedLink: this.state.SavedLink });
                 };
             }
 
@@ -77,7 +79,18 @@
                     return;
                 var state = this.state;
                 var self = this;
+                state.InitialFields = state.Fields;
+                state.Epoch = 0;
                 state.Updater = setInterval(() => self.doIteration(), 100);
+                this.setState(state);
+            }
+
+            restoreGame() {
+                if (this.state.Updater != -1)
+                    clearInterval(this.state.Updater);
+                var state = this.state;
+                state.Updater = -1;
+                state.Fields = state.InitialFields;
                 this.setState(state);
             }
 
@@ -90,12 +103,34 @@
                 this.setState(state);
             }
 
+            saveGame() {
+                var self = this;
+                var fields = window.btoa(JSON.stringify(this.state.Fields));
+                httpGetAsync("/life_save?fields=" + fields, (response) => {
+                    var state = self.state;
+                    state.SavedLink = response;
+                    self.setState(state);
+                });
+            }
+
+            loadGame(link) {
+                var self = this;
+                httpGetAsync("/life_load?link=" + link, (response) => {
+                    if (response == "")
+                        return;
+                    var fields = JSON.parse(window.atob(response));
+                    var state = self.state;
+                    state.Fields = fields;
+                    self.setState(state);
+                });
+            }
+
             clearGame() {
                 if (this.state.Updater != -1)
                     clearInterval(this.state.Updater);
                 var n = 50;
                 var fields = this.buildCleanFields(n);
-                this.setState({ N: n, Fields: fields, Updater: -1 });
+                this.setState({ N: n, Fields: fields, InitialFields: fields, Epoch: 0, Updater: -1, SavedLink: "" });
             }
 
             render() {
@@ -109,13 +144,32 @@
                     return ( <tr>{cells}</tr> );
                 });
 
+                var link = ( <div /> );
+                if (this.state.SavedLink != "") {
+                    var fullPath = "https://vnik.me/life?load=" + this.state.SavedLink;
+                    link = ( <div><a href={fullPath}>{fullPath}</a><br /></div> );
+                }
+
                 return ( <div>
-                            <table>{rows}</table>
+                            <table>
+                                <tr>
+                                    <td><table>{rows}</table></td>
+                                    <td>Epoch: {self.state.Epoch}</td>
+                                </tr>
+                            </table>
+                            <br />
                             <Button color="primary" onClick={() => self.startGame()}>Start</Button>
                             &nbsp;
                             <Button color="primary" onClick={() => self.stopGame()}>Stop</Button>
                             &nbsp;
+                            <Button color="primary" onClick={() => self.restoreGame()}>Restore</Button>
+                            &nbsp;
+                            <Button color="primary" onClick={() => self.saveGame()}>Save</Button>
+                            &nbsp;
                             <Button color="primary" onClick={() => self.clearGame()}>Clear</Button>
+                            <br />
+                            {link}
+                            <br />
                         </div>
                     );
             }
@@ -124,7 +178,7 @@
 
         // ========================================
 
-        ReactDOM.render(<Game />, document.getElementById("root"));
+        ReactDOM.render(<Game link="{{link}}"/>, document.getElementById("root"));
 
     </script>
 

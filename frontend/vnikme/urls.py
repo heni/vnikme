@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^nature.*', vnikme.views.nature_page),
     url(r'^authors.*', vnikme.views.authors_page),
     url(r'^poetry.*', vnikme.views.poetry_page),
+    url(r'^life_save.*', vnikme.views.life_save_page),
+    url(r'^life_load.*', vnikme.views.life_load_page),
     url(r'^life.*', vnikme.views.life_page),
     url(r'^.*', vnikme.views.main_page)
 ]
