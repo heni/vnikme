@@ -31,7 +31,7 @@ def saveLifeState(fields):
 
 def loadLifeState(link):
     objs = TLifeState.objects.filter(link = link)
-    if len(objs)!= 1:
+    if len(objs) != 1:
         return ""
     return objs[0].data
 

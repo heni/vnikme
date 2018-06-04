@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [u'vnik.me', u'www.vnik.me']
 
 INSTALLED_APPS = [
     'life.apps.LifeConfig',
+    'messenger.apps.MessengerConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
