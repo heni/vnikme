@@ -38,6 +38,12 @@ def life_load_page(request):
 def life_page(request):
     return do_general(request, "life.html", {"link": request.GET.get("load", "")})
 
+def snake_page(request):
+    return do_general(request, 'snake_page.html')
+
+def ttt_page(request):
+    return do_general(request, 'ttt_page.html')
+
 def main_page(request):
     return do_general(request, "main.html")
 

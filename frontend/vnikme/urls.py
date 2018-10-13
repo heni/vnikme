@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^life_save.*', vnikme.views.life_save_page),
     url(r'^life_load.*', vnikme.views.life_load_page),
     url(r'^life.*', vnikme.views.life_page),
+    url(r'^snake.*', vnikme.views.snake_page),
+    url(r'^ttt.*', vnikme.views.ttt_page),
 ] + messenger.urls.urlpatterns + [
     url(r'^.*', vnikme.views.main_page),
 ]
