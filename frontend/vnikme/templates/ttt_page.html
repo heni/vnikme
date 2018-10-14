@@ -131,6 +131,7 @@
           }
 
           jumpTo(step) {
+            bumpCounter();
             this.setState({
               stepNumber: step,
               xIsNext: step % 2 ? false : true
