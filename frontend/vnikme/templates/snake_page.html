@@ -54,6 +54,7 @@ function game() {
     updateId = setInterval(game, 1000 / (2 + Math.sqrt(trail.length)));
 }
 function keyPush(evt) {
+    bumpCounter();
     switch(evt.keyCode) {
         case 37:
             xv=-1;yv=0;

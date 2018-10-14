@@ -68,6 +68,7 @@
             makeOnClick(i, j) {
                 var self = this;
                 return () => {
+                    bumpCounter();
                     var fields = self.state.Fields;
                     fields[i][j] = 1 - fields[i][j];
                     self.setState({ N: self.state.N, Fields: fields, Updater: self.state.Updater, SavedLink: this.state.SavedLink });
@@ -75,6 +76,7 @@
             }
 
             startGame() {
+                bumpCounter();
                 if (this.state.Updater != -1)
                     return;
                 var state = this.state;
@@ -86,6 +88,7 @@
             }
 
             restoreGame() {
+                bumpCounter();
                 if (this.state.Updater != -1)
                     clearInterval(this.state.Updater);
                 var state = this.state;
@@ -95,6 +98,7 @@
             }
 
             stopGame() {
+                bumpCounter();
                 if (this.state.Updater == -1)
                     return;
                 clearInterval(this.state.Updater);
@@ -104,6 +108,7 @@
             }
 
             saveGame() {
+                bumpCounter();
                 var self = this;
                 var fields = window.btoa(JSON.stringify(this.state.Fields));
                 httpGetAsync("/life_save?fields=" + fields, (response) => {
@@ -114,6 +119,7 @@
             }
 
             loadGame(link) {
+                bumpCounter();
                 var self = this;
                 httpGetAsync("/life_load?link=" + link, (response) => {
                     if (response == "")
@@ -126,6 +132,7 @@
             }
 
             clearGame() {
+                bumpCounter();
                 if (this.state.Updater != -1)
                     clearInterval(this.state.Updater);
                 var n = 50;

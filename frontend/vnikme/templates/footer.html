@@ -2,5 +2,13 @@
 
       <footer class="footer">
         <p>&copy; <a href="https://vnik.me">vnik.me</a> 2017</p>
+        <script language=javascript>
+            var old = window.onload;
+            window.onload = function() {
+                bumpCounter();
+                if (old != null)
+                    old();
+            }
+        </script>
       </footer>
 

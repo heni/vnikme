@@ -8,6 +8,7 @@ from django.utils.cache import patch_cache_control
 from django.views.decorators.csrf import csrf_exempt
 import httplib
 import life.views
+import urllib2
 
 
 def do_general(request, body, params = {}):
@@ -43,6 +44,10 @@ def snake_page(request):
 
 def ttt_page(request):
     return do_general(request, 'ttt_page.html')
+
+def counter_page(request):
+    answer = urllib2.urlopen("http://bots.baaas.org:5501").read()
+    return HttpResponse(answer, content_type = "text/html")
 
 def main_page(request):
     return do_general(request, "main.html")

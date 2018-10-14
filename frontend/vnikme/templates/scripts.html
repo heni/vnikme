@@ -8,5 +8,12 @@
         req.open("GET", theUrl, true); // true for asynchronous
         req.send(null);
     }
+
+    function bumpCounter() {
+        httpGetAsync("/counter", (response) => {
+            //console.log(response);
+        });
+    }
+
 </script>
 
