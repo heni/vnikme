@@ -107,6 +107,17 @@
                 this.setState(state);
             }
 
+            stepGame() {
+                bumpCounter();
+                if (this.state.Updater != -1) {
+                    clearInterval(this.state.Updater);
+                    var state = this.state;
+                    state.Updater = -1;
+                    this.setState(state);
+                }
+                this.doIteration();
+            }
+
             saveGame() {
                 bumpCounter();
                 var self = this;
@@ -168,6 +179,8 @@
                             <Button color="primary" onClick={() => self.startGame()}>Start</Button>
                             &nbsp;
                             <Button color="primary" onClick={() => self.stopGame()}>Stop</Button>
+                            &nbsp;
+                            <Button color="primary" onClick={() => self.stepGame()}>Step</Button>
                             &nbsp;
                             <Button color="primary" onClick={() => self.restoreGame()}>Restore</Button>
                             &nbsp;
