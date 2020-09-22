@@ -8,6 +8,7 @@ from django.utils.cache import patch_cache_control
 from django.views.decorators.csrf import csrf_exempt
 import httplib
 import life.views
+import labeler.views
 import urllib2
 
 
@@ -48,6 +49,21 @@ def ttt_page(request):
 def counter_page(request):
     answer = urllib2.urlopen("http://bots.baaas.org:5501").read()
     return HttpResponse(answer, content_type = "text/html")
+
+def labeler_get_all_page(request):
+    result = labeler.views.getAllLabels()
+    return HttpResponse(result, content_type = "text/html")
+
+def labeler_clear_all_page(request):
+    result = labeler.views.clearAllLabels()
+    return HttpResponse(result, content_type = "text/html")
+
+def labeler_decision_page(request):
+    result = labeler.views.submitLabelerDecision(request.GET.get("state", ""))
+    return HttpResponse(result, content_type = "text/html")
+
+def labeler_page(request):
+    return do_general(request, 'labeler.html')
 
 def main_page(request):
     return do_general(request, "main.html")

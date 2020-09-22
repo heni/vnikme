@@ -30,6 +30,10 @@ urlpatterns = [
     url(r'^snake.*', vnikme.views.snake_page),
     url(r'^ttt.*', vnikme.views.ttt_page),
     url(r'^counter.*', vnikme.views.counter_page),
+    url(r'^labeler_get_all.*', vnikme.views.labeler_get_all_page),
+    url(r'^labeler_clear_all.*', vnikme.views.labeler_clear_all_page),
+    url(r'^labeler_decision.*', vnikme.views.labeler_decision_page),
+    url(r'^labeler.*', vnikme.views.labeler_page),
 ] + messenger.urls.urlpatterns + [
     url(r'^.*', vnikme.views.main_page),
 ]

@@ -1,0 +1,128 @@
+{% load static %}
+
+    <div id="root"></div>
+    <script type="text/babel">
+
+        var Button = Reactstrap.Button;
+        var ButtonGroup = Reactstrap.ButtonGroup;
+
+        const styles = {
+            empty: { width: "10pt", height: "10pt", border: "1pt solid grey", margin: "0", padding: "0", borderCollapse: "collapse" },
+            filled: { width: "10pt", height: "10pt", border: "1pt solid grey", margin: "0", padding: "0", borderCollapse: "collapse", backgroundColor: "blue" }
+        };
+ 
+        class Labeler extends React.Component {
+            constructor(props) {
+                super(props);
+                var n = 1;
+                var idx = Math.floor(Math.random() * n);
+                var psiType = [];
+                var protection = [];
+                this.state = { N: n, Idx: idx, PsiType: psiType, Protection: protection };
+            }
+
+            submitDecision() {
+                var self = this;
+                var state = window.btoa(JSON.stringify(this.state));
+                httpGetAsync("/labeler_decision?state=" + state, (response) => {
+                    alert(response);
+                });
+            }
+
+            onPsiClick(selected) {
+                var psiType = this.state.PsiType;
+                const index = psiType.indexOf(selected);
+                if (index < 0) {
+                    psiType.push(selected);
+                } else {
+                    psiType.splice(index, 1);
+                }
+                this.setState({N: this.state.N, Idx: this.state.Idx, PsiType: psiType, Protection: this.state.Protection});
+            }
+
+            onProtectionClick(selected) {
+                var protection = this.state.Protection;
+                const index = protection.indexOf(selected);
+                if (index < 0) {
+                    protection.push(selected);
+                } else {
+                    protection.splice(index, 1);
+                }
+                this.setState({N: this.state.N, Idx: this.state.Idx, PsiType: this.state.PsiType, Protection: protection});
+            }
+
+            explainOptions(options, selected) {
+                selected.sort();
+                var values = [];
+                for (var i = 0; i < selected.length; ++i)
+                    values.push(options[selected[i]]);
+                return JSON.stringify(values);
+            }
+
+            makePsiButton(i, psiOptions) {
+                var self = this;
+                return <Button color="primary" onClick={() => self.onPsiClick(i)} active={self.state.PsiType.includes(i)}>{psiOptions[i]}</Button>;
+            }
+
+            makeProtectionButton(i, protectionOptions) {
+                var self = this;
+                return <Button color="primary" onClick={() => self.onProtectionClick(i)} active={self.state.Protection.includes(i)}>{protectionOptions[i]}</Button>;
+            }
+
+            render() {
+                var self = this;
+                var state = this.state;
+
+                var imgPath = "static/" + this.state.Idx + ".jpg";
+                var img = ( <img src={imgPath} width={300} /> );
+
+                var psiOptions = ["Психопат", "Нарцисс", "Шизоид", "Депрессивный", "Маниакальный", "Параноик", "Истерик женщина", "Ананкаст", "Мазохист", "Истерик мужчина"];
+                var psiElements = [];
+                for (var i = 0; i < psiOptions.length; ++i) {
+                    psiElements.push(this.makePsiButton(i, psiOptions));
+                }
+                var psiType = (
+                    <span>
+                        <ButtonGroup>
+                            {psiElements}
+                        </ButtonGroup>
+                        <p>Selected: {self.explainOptions(psiOptions, state.PsiType)}</p>
+                    </span>
+                );
+
+                var protectionOptions = ["One", "Two", "Three"];
+                var protectionElements = [];
+                for (var i = 0; i < protectionOptions.length; ++i) {
+                    protectionElements.push(this.makeProtectionButton(i, protectionOptions));
+                } 
+                var protection = (
+                    <span>
+                        <ButtonGroup>
+                            {protectionElements}
+                        </ButtonGroup>
+                        <p>Selected: {self.explainOptions(protectionOptions, state.Protection)}</p>
+                    </span>
+                );
+
+                return (
+                    <table>
+                        <tr><td>{img}</td></tr>
+                        <tr><td>Психотип:</td></tr>
+                        <tr><td>{psiType}</td></tr>
+                        <tr><td>Защита:</td></tr>
+                        <tr><td>{protection}</td></tr>
+                        <tr><td><Button color="primary" onClick={() => self.submitDecision()}>Отправить результат</Button></td></tr>
+                        <tr><td><a href="/labeler_get_all">Посмотреть все текущие метки</a></td></tr>
+                        <tr><td><a href="/labeler_clear_all">Удалить все текущие метки</a></td></tr>
+                    </table>
+                    );
+            }
+        }
+
+
+        // ========================================
+
+        ReactDOM.render(<Labeler />, document.getElementById("root"));
+
+    </script>
+
