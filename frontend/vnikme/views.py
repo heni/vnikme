@@ -11,6 +11,7 @@ import life.views
 import labeler.views
 import urllib2
 import vnikme.covid
+import vnikme.plots
 
 
 def do_general(request, body, params = {}):
@@ -67,10 +68,13 @@ def labeler_page(request):
     return do_general(request, 'labeler.html')
 
 def do_covid_page(request, country_code):
-    cases, deaths, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
+    cases, deaths, tests, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
     if not cases:
-        cases, deaths = [0] * 8, [0] * 8
-    avg_cases, avg_deaths = map(lambda x: vnikme.covid.rolling_average(x, 7), [cases, deaths])
+        cases, deaths, tests = [0] * 8, [0] * 8, [0] * 8
+    avg_cases, avg_deaths, avg_tests = map(lambda x: vnikme.covid.rolling_average(x, 7), [cases, deaths, tests])
+    cases_img = vnikme.plots.plot_to_png({'cases': avg_cases})
+    deaths_img = vnikme.plots.plot_to_png({'deaths': avg_deaths})
+    tests_img = vnikme.plots.plot_to_png({'tests': avg_tests})
     return do_general(
         request, 
         'covid.html',
@@ -83,6 +87,9 @@ def do_covid_page(request, country_code):
             'max_avg_deaths_30': max(avg_deaths[-30:]),
             'max_avg_cases': max(avg_cases),
             'max_avg_deaths': max(avg_deaths),
+            'cases_img': cases_img,
+            'deaths_img': deaths_img,
+            'tests_img': tests_img,
             'last_ds': last_ds
         }
     )

@@ -1,0 +1,19 @@
+{% load static %}
+
+<table>
+    <tr style="font-size: 20pt"><th>Max cases (last 30):</th><th width=50pt></th><th>{{max_avg_cases_30}}</th></tr>
+    <tr style="font-size: 20pt"><th>Max deaths (last 30):</th><th width=50pt></th><th>{{max_avg_deaths_30}}</th></tr>
+    <tr style="font-size: 20pt"><th>Max cases (all time):</th><th width=50pt></th><th>{{max_avg_cases}}</th></tr>
+    <tr style="font-size: 20pt"><th>Max deaths (all time):</th><th width=50pt></th><th>{{max_avg_deaths}}</th></tr>
+    <tr style="font-size: 20pt"><th>Latest date:</th><th width=50pt></th><th>{{last_ds}}</th></tr>
+</table>
+
+<br />
+<img src="{{cases_img}}" /><br />
+<img src="{{deaths_img}}" /><br />
+<img src="{{tests_img}}" /><br />
+<p>Raw cases:<br /> {{cases}}</p>
+<p>Raw deaths:<br /> {{deaths}}</p>
+<p>Raw avg cases (last 30):<br /> {{avg_cases}}</p>
+<p>Raw avg deaths (last 30):<br /> {{avg_deaths}}</p>
+
