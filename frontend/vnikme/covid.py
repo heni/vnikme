@@ -25,6 +25,6 @@ def rolling_average(data, window):
         s += x
         sums.append(s)
     for i in range(window, len(data)):
-        result.append(int((sums[i] - (sums[i - window - 1] if i > window else 0.0)) // window))
+        result.append(int((sums[i] - sums[i - window]) // window))
     return result
 
