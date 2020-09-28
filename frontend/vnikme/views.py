@@ -68,7 +68,7 @@ def labeler_page(request):
     return do_general(request, 'labeler.html')
 
 def do_covid_page(request, country_code):
-    cases, deaths, tests, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
+    cases, deaths, tests, location, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
     if not cases:
         cases, deaths, tests = [0] * 8, [0] * 8, [0] * 8
     avg_cases, avg_deaths, avg_tests = map(lambda x: vnikme.covid.rolling_average(x, 7), [cases, deaths, tests])
@@ -90,6 +90,7 @@ def do_covid_page(request, country_code):
             'cases_img': cases_img,
             'deaths_img': deaths_img,
             'tests_img': tests_img,
+            'location': location,
             'last_ds': last_ds
         }
     )
