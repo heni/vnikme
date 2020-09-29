@@ -71,10 +71,13 @@ def do_covid_page(request, country_code):
     cases, deaths, tests, location, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
     if not cases:
         cases, deaths, tests = [0] * 8, [0] * 8, [0] * 8
+    prevalence = [min(float(cases[i]) / max(tests[i], 1), 1.0) for i in range(len(cases))]
     avg_cases, avg_deaths, avg_tests = map(lambda x: vnikme.covid.rolling_average(x, 7), [cases, deaths, tests])
+    avg_prevalence = [min(float(avg_cases[i]) / max(avg_tests[i], 1), 1.0) for i in range(len(avg_cases))]
     cases_img = vnikme.plots.plot_to_png({'cases': avg_cases})
     deaths_img = vnikme.plots.plot_to_png({'deaths': avg_deaths})
     tests_img = vnikme.plots.plot_to_png({'tests': avg_tests})
+    prevalence_img = vnikme.plots.plot_to_png({'prevalence': avg_prevalence})
     return do_general(
         request, 
         'covid.html',
@@ -90,6 +93,7 @@ def do_covid_page(request, country_code):
             'cases_img': cases_img,
             'deaths_img': deaths_img,
             'tests_img': tests_img,
+            'prevalence_img': prevalence_img,
             'location': location,
             'last_ds': last_ds
         }
