@@ -12,6 +12,7 @@ import labeler.views
 import urllib2
 import vnikme.covid
 import vnikme.plots
+import math
 
 
 def do_general(request, body, params = {}):
@@ -74,10 +75,14 @@ def do_covid_page(request, country_code):
     prevalence = [min(float(cases[i]) / max(tests[i], 1), 1.0) for i in range(len(cases))]
     avg_cases, avg_deaths, avg_tests = map(lambda x: vnikme.covid.rolling_average(x, 7), [cases, deaths, tests])
     avg_prevalence = [min(float(avg_cases[i]) / max(avg_tests[i], 1), 1.0) for i in range(len(avg_cases))]
+    cases_wow = [math.log((avg_cases[i] + 50.0) / (avg_cases[i - 7] + 50)) for i in range(7, len(avg_cases))]
+    deaths_wow = [math.log((avg_deaths[i] + 5.0) / (avg_deaths[i - 7] + 5)) for i in range(7, len(avg_deaths))]
     cases_img = vnikme.plots.plot_to_png({'cases': avg_cases})
     deaths_img = vnikme.plots.plot_to_png({'deaths': avg_deaths})
     tests_img = vnikme.plots.plot_to_png({'tests': avg_tests})
     prevalence_img = vnikme.plots.plot_to_png({'prevalence': avg_prevalence})
+    cases_wow_img = vnikme.plots.plot_to_png({'log_cases_wow': cases_wow})
+    deaths_wow_img = vnikme.plots.plot_to_png({'log_deaths_wow': deaths_wow})
     return do_general(
         request, 
         'covid.html',
@@ -94,6 +99,8 @@ def do_covid_page(request, country_code):
             'deaths_img': deaths_img,
             'tests_img': tests_img,
             'prevalence_img': prevalence_img,
+            'cases_wow_img': cases_wow_img,
+            'deaths_wow_img': deaths_wow_img,
             'location': location,
             'last_ds': last_ds
         }
