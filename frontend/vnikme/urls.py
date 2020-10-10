@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^labeler.*', vnikme.views.labeler_page),
     url(r'^covid.*', vnikme.views.covid_page),
     url(r'^gbcovid.*', vnikme.views.gbcovid_page),
+    url(r'^timus.*', vnikme.views.timus_page),
 ] + messenger.urls.urlpatterns + [
     url(r'^.*', vnikme.views.main_page),
 ]

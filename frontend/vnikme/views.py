@@ -13,6 +13,9 @@ import urllib2
 import vnikme.covid
 import vnikme.plots
 import math
+import json
+import datetime
+from django.template.defaulttags import register
 
 
 def do_general(request, body, params = {}):
@@ -111,6 +114,23 @@ def covid_page(request):
 
 def gbcovid_page(request):
     return do_covid_page(request, 'GBR')
+
+@register.simple_tag
+def get_timus_tasks(data, coder, dt):
+    return len(data[coder]['dates'].get(dt, []))
+
+@register.simple_tag
+def get_total_timus_tasks(data, coder):
+    return data[coder]['count']
+
+def timus_page(request):
+    data = json.loads(open('/home/vnik/work/vnikme/frontend/vnikme/timus.json', 'rt').read())
+    coders = sorted(data.keys())
+    dates = []
+    for i in range((datetime.date.today()-datetime.date(2020, 10, 9)).days+1):
+        dt = (datetime.date(2020, 10, 9) + datetime.timedelta(days=i)).isoformat()
+        dates.append(dt)
+    return do_general(request, 'timus.html', {'coders': coders, 'dates': dates, 'data': data})
 
 def main_page(request):
     return do_general(request, "main.html")
