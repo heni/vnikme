@@ -55,26 +55,28 @@ def iterate_solutions(author, count):
         if tr.attrib.get('class', '') not in ('even', 'odd'):
             continue
         solution = parse_solution(tr)
+        solution['code'] = author
         if parse_date(solution['date']) < datetime.date(2020, 10, 9):
             continue
         yield solution
 
 
 def main():
-    authors = ['13373', '167456', '279193', '301886']
+    authors = ['13373', '21172', '167456', '279193', '301886']
     result = {}
     data = []
     problems = {}
     for author in authors:
         data += list(iterate_solutions(author, 1000))
     for solution in data[::-1]:
-        if solution['coder'] not in result:
-            result[solution['coder']] = {'dates': {}, 'count': 0}
-            problems[solution['coder']] = set()
-        if solution['problem'] in problems[solution['coder']]:
+        code, coder = solution['code'], solution['coder']
+        if code not in result:
+            result[code] = {'dates': {}, 'count': 0, 'name': coder}
+            problems[code] = set()
+        if solution['problem'] in problems[code]:
             continue
-        problems[solution['coder']].add(solution['problem'])
-        coder = result[solution['coder']]
+        problems[code].add(solution['problem'])
+        coder = result[code]
         dt = parse_date(solution['date']).isoformat()
         if dt not in coder['dates']:
             coder['dates'][dt] = []

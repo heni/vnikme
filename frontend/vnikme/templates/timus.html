@@ -3,15 +3,15 @@
 
 <table style="width: 100%; border: 1pt solid black; border-collapse: collapse">
     <tr>
-        <td style="border: 1pt solid black;"></td>{% for coder in coders %}<td style="border: 1pt solid black;">{{coder}}</td>{% endfor %}
+        <td style="border: 1pt solid black;"></td>{% for code, name in coders %}<td style="border: 1pt solid black;"><a href="https://acm.timus.ru/status.aspx?author={{code}}&status=accepted">{{name}}</a></td>{% endfor %}
     </tr>
     {% for dt in dates %}
     <tr>
-        <td style="border: 1pt solid black;">{{dt}}</td>{% for coder in coders %}{% get_timus_tasks data coder dt as tasks%}<td style={% if tasks %}'border: 1pt solid black; background-color: greenyellow;'{% else %}'border: 1pt solid black;'{% endif %}>{{tasks}}</td>{% endfor %}
+        <td style="border: 1pt solid black;">{{dt}}</td>{% for code, name in coders %}{% get_timus_tasks data code dt as tasks%}<td style={% if tasks %}'border: 1pt solid black; background-color: greenyellow;'{% else %}'border: 1pt solid black;'{% endif %}>{{tasks}}</td>{% endfor %}
     </tr>
     {% endfor %}
     <tr>
-        <td style="border: 1pt solid black;">Итого</td>{% for coder in coders %}{% get_total_timus_tasks data coder as tasks%}<td style={% if tasks %}'border: 1pt solid black; background-color: greenyellow;'{% else %}'border: 1pt solid black;'{% endif %}>{{tasks}}</td>{% endfor %}
+        <td style="border: 1pt solid black;">Итого</td>{% for code, name in coders %}{% get_total_timus_tasks data code as tasks%}<td style={% if tasks %}'border: 1pt solid black; background-color: greenyellow;'{% else %}'border: 1pt solid black;'{% endif %}>{{tasks}}</td>{% endfor %}
     </tr>
 </table>
 
