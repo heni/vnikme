@@ -6,10 +6,9 @@ from django.template.loader import get_template
 from django.utils.six.moves.urllib.parse import parse_qsl, urlparse, urlunparse
 from django.utils.cache import patch_cache_control
 from django.views.decorators.csrf import csrf_exempt
-import httplib
 import life.views
 import labeler.views
-import urllib2
+import urllib.request
 import vnikme.covid
 import vnikme.plots
 import math
@@ -53,7 +52,8 @@ def ttt_page(request):
     return do_general(request, 'ttt_page.html')
 
 def counter_page(request):
-    answer = urllib2.urlopen("http://bots.baaas.org:5501").read()
+    request = urllib.request.Request("http://bots.baaas.org:5501")
+    answer = urllib.request.urlopen(request).read()
     return HttpResponse(answer, content_type = "text/html")
 
 def labeler_get_all_page(request):

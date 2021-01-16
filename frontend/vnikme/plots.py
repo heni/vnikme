@@ -11,5 +11,5 @@ def plot_to_png(data):
     plt.legend()
     plt.savefig(buf, format='png')
     buf.seek(0)
-    return 'data:image/png;base64,' + urllib.quote(base64.b64encode(buf.read()))
+    return 'data:image/png;base64,' + urllib.parse.quote(base64.b64encode(buf.read()))
 

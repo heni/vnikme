@@ -62,7 +62,7 @@ def iterate_solutions(author, count):
 
 
 def main():
-    authors = ['13373', '21172', '167456', '279193', '301886']
+    authors = ['13373', '21172', '167456', '279193', '301886', '310000']
     result = {}
     data = []
     problems = {}
