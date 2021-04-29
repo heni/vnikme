@@ -3,7 +3,7 @@ import json
 
 def fetch_raw_cases_deaths(country_code):
     data = json.loads(open('/home/vnik/work/vnikme/frontend/vnikme/covid.json', 'rt').read())
-    cases, deaths, tests, last_ds = [], [], [], None
+    cases, deaths, tests, jabs, last_ds = [], [], [], [], None
     if country_code not in data:
         return cases, deaths, tests, '', last_ds
     country_data = data[country_code]
@@ -14,8 +14,9 @@ def fetch_raw_cases_deaths(country_code):
         cases.append(entry.get('new_cases', 0))
         deaths.append(entry.get('new_deaths', 0))
         tests.append(entry.get('new_tests', 0))
+        jabs.append(entry.get('total_vaccinations', 0))
         last_ds = entry['date']
-    return cases, deaths, tests, location, last_ds
+    return cases, deaths, tests, location, jabs, last_ds
 
 
 def rolling_average(data, window):

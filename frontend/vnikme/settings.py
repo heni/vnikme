@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'vrqcczj_+6n_f0p*dx=w8#_f_nfr1l&(waure21e4n^htms(l2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [u'vnik.me', u'www.vnik.me']
 

@@ -72,7 +72,7 @@ def labeler_page(request):
     return do_general(request, 'labeler.html')
 
 def do_covid_page(request, country_code):
-    cases, deaths, tests, location, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
+    cases, deaths, tests, location, jabs, last_ds = vnikme.covid.fetch_raw_cases_deaths(country_code)
     if not cases:
         cases, deaths, tests = [0] * 8, [0] * 8, [0] * 8
     prevalence = [min(float(cases[i]) / max(tests[i], 1), 1.0) for i in range(len(cases))]
@@ -86,6 +86,7 @@ def do_covid_page(request, country_code):
     prevalence_img = vnikme.plots.plot_to_png({'prevalence': avg_prevalence})
     cases_wow_img = vnikme.plots.plot_to_png({'log_cases_wow': cases_wow})
     deaths_wow_img = vnikme.plots.plot_to_png({'log_deaths_wow': deaths_wow})
+    jabs_img = vnikme.plots.plot_to_png({'jabs': jabs})
     return do_general(
         request, 
         'covid.html',
@@ -94,6 +95,7 @@ def do_covid_page(request, country_code):
             'deaths': list(map(int,deaths[-37:])),
             'avg_cases': avg_cases[-30:],
             'avg_deaths': avg_deaths[-30:],
+            'jabs': jabs[-30:],
             'max_avg_cases_30': max(avg_cases[-30:]),
             'max_avg_deaths_30': max(avg_deaths[-30:]),
             'max_avg_cases': max(avg_cases),
@@ -104,8 +106,9 @@ def do_covid_page(request, country_code):
             'prevalence_img': prevalence_img,
             'cases_wow_img': cases_wow_img,
             'deaths_wow_img': deaths_wow_img,
+            'jabs_img': jabs_img,
             'location': location,
-            'last_ds': last_ds
+            'last_ds': last_ds,
         }
     )
 
@@ -128,8 +131,8 @@ def timus_page(request):
     codes = sorted(data.keys(), key = lambda x: data[x]['name'])
     coders = [(coder, data[coder]['name']) for coder in codes]
     dates = []
-    for i in range((datetime.date.today()-datetime.date(2020, 10, 9)).days+2):
-        dt = (datetime.date(2020, 10, 9) + datetime.timedelta(days=i)).isoformat()
+    for i in range((datetime.date.today()-datetime.date(2021, 1, 31)).days+2):
+        dt = (datetime.date(2021, 1, 31) + datetime.timedelta(days=i)).isoformat()
         dates.append(dt)
     return do_general(request, 'timus.html', {'coders': coders, 'dates': dates, 'data': data})
 
