@@ -5,6 +5,7 @@
 import urllib.request
 from lxml import etree
 import datetime
+import dateutil.tz
 import json
 
 
@@ -17,13 +18,17 @@ def extract_tag(parent, tag_name, count):
     return None
 
 
-def parse_date(dt):
+def parse_date(dt, tm):
     months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
     dt = dt.split()
+    tm = tm.split(':')
     day = int(dt[0])
     month = months[dt[1]]
     year = int(dt[2])
-    return datetime.date(year, month, day)
+    hour, minute, second = list(map(int, tm))
+    ekb_time = datetime.datetime(year, month, day, hour, minute, second, tzinfo=dateutil.tz.gettz('Asia/Yekaterinburg'))
+    utc_time = ekb_time.astimezone(dateutil.tz.gettz('UTC'))
+    return utc_time.replace(tzinfo=None).date()
 
 
 def parse_solution(tr):
@@ -31,6 +36,8 @@ def parse_solution(tr):
     for td in tr:
         cls = td.get('class', '')
         if cls == 'date':
+            dt = extract_tag(td, 'nobr', 0)
+            result['time'] = dt.text
             dt = extract_tag(td, 'nobr', 1)
             result['date'] = dt.text
         elif cls == 'problem':
@@ -56,7 +63,7 @@ def iterate_solutions(author, count):
             continue
         solution = parse_solution(tr)
         solution['code'] = author
-        if parse_date(solution['date']) < datetime.date(2021, 10, 1):
+        if parse_date(solution['date'], solution['time']) < datetime.date(2021, 10, 1):
             continue
         yield solution
 
@@ -77,7 +84,7 @@ def main():
             continue
         problems[code].add(solution['problem'])
         coder = result[code]
-        dt = parse_date(solution['date']).isoformat()
+        dt = parse_date(solution['date'], solution['time']).isoformat()
         if dt not in coder['dates']:
             coder['dates'][dt] = []
         coder['dates'][dt].append(solution['problem'])
