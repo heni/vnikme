@@ -27,8 +27,8 @@ def parse_date(dt, tm):
     year = int(dt[2])
     hour, minute, second = list(map(int, tm))
     ekb_time = datetime.datetime(year, month, day, hour, minute, second, tzinfo=dateutil.tz.gettz('Asia/Yekaterinburg'))
-    utc_time = ekb_time.astimezone(dateutil.tz.gettz('GMT'))
-    return utc_time.replace(tzinfo=None).date()
+    lon_time = ekb_time.astimezone(dateutil.tz.gettz('Europe/London'))
+    return lon_time.replace(tzinfo=None).date()
 
 
 def parse_solution(tr):
