@@ -63,7 +63,7 @@ def iterate_solutions(author, count):
             continue
         solution = parse_solution(tr)
         solution['code'] = author
-        if parse_date(solution['date'], solution['time']) < datetime.date(2021, 10, 1):
+        if parse_date(solution['date'], solution['time']) < datetime.date(2022, 1, 1):
             continue
         yield solution
 

@@ -131,8 +131,8 @@ def timus_page(request):
     codes = sorted(data.keys(), key = lambda x: data[x]['name'])
     coders = [(coder, data[coder]['name']) for coder in codes]
     dates = []
-    for i in range((datetime.date.today()-datetime.date(2021, 10, 1)).days+2):
-        dt = (datetime.date(2021, 10, 1) + datetime.timedelta(days=i)).isoformat()
+    for i in range((datetime.date.today()-datetime.date(2022, 1, 1)).days+2):
+        dt = (datetime.date(2022, 1, 1) + datetime.timedelta(days=i)).isoformat()
         dates.append(dt)
     return do_general(request, 'timus.html', {'coders': coders, 'dates': dates, 'data': data})
 
