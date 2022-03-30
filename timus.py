@@ -50,7 +50,7 @@ def parse_solution(tr):
 
 
 def iterate_solutions(author, count):
-    response = urllib.request.urlopen("https://acm.timus.ru/status.aspx?author={author}&status=accepted&count={count}".format(author=author, count=count))
+    response = urllib.request.urlopen("https://timus.online/status.aspx?author={author}&status=accepted&count={count}".format(author=author, count=count))
     parser = etree.HTMLParser()
     root = etree.fromstring(response.read(), parser)
     body = extract_tag(root, 'body', 0)
